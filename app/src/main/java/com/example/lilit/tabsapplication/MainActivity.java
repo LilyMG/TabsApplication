@@ -2,6 +2,7 @@ package com.example.lilit.tabsapplication;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -12,11 +13,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
     ActionBar actionBar;
     ActionBar.TabListener tabListener;
-    android.app.FragmentTransaction fragmentTransaction;
+    private MyPageAdapter pageAdapter;
+    private ViewPager pager;
+    private List<TabsFragment> fragments = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +32,13 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        for (int i = 0; i <5 ; i++) {
+            fragments.add(new TabsFragment());
+        }
+        pageAdapter= new MyPageAdapter(getSupportFragmentManager(), fragments);
+        pager= (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(pageAdapter);
         tabListener = new ActionBar.TabListener() {
             @Override
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
@@ -69,5 +84,28 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    class MyPageAdapter extends FragmentPagerAdapter {
+
+        private List<? extends Fragment> fragments;
+
+        public MyPageAdapter(FragmentManager fm, List<? extends Fragment> fragments) {
+            super(fm);
+            this.fragments = fragments;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
     }
 }
